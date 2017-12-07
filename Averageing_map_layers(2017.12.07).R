@@ -60,11 +60,18 @@ abline(3.041e-01, 2.465e-05, col=2)
 lm(y2~x2)
 abline(2.511e-01, 7.634e-05, col=4)
 
+y3 <- 0.3148508
+
 smoothingSpline = smooth.spline(x1, y1, spar=0.35)
-plot(x1,y1)
-lines(smoothingSpline)
+plot(x1,y1, type="l", col=4)
+lines(smoothingSpline, col=6)
+abline(h=0.3, col=2)
 
+#plot NDVI- mean(NDVI) to show anaomlaies of grpahd
+anom <- data- mean_ndvi 
 
+mean_overall <- mean(data) 
 
-#extract time series 
-length(x2)
+mean_overall
+mean(mean_overall)
+cellStats(mean_overall, mean)
