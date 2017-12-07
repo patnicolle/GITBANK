@@ -50,6 +50,8 @@ lines(smoothingSpline, col="aquamarine1", lwd=3)
 
 
 
+#attempt 1 
 
+ggplot(data = x1,mapping = aes(x,y1))+geom_segment(data = x1 , mapping = aes(x=x,y=ystart,xend=x,yend=y1,color=col))
 
 
