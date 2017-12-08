@@ -33,7 +33,22 @@ for(k in 1: nlayers(data)) {
 }
 
 
+annual_ndvi <- brick()
+years <- nlayers(data)/24
+for (k in 1: years) {
+  annual <- mean(data[[(k*24-23):(k*24)]])
+  annual_ndvi <- addLayer(annual_ndvi, annual)
+}
+
+mean(annual_ndvi)
+
+meanmeanndvi<- mean(meanndvi)
+anomndvi <-meanndvi- meanmeanndvi
 meanVOD <- vector(length = nlayers(data2))
+
+plot(anomndvi, type= "l")
+abline(h=0, col=4)
+
 
 for(k in 1: nlayers(data2)) {
   meanVOD[k] <- mean(values(data2[[k]]), na.rm=TRUE)
@@ -64,8 +79,8 @@ y3 <- 0.3148508
 
 smoothingSpline = smooth.spline(x1, y1, spar=0.35)
 plot(x1,y1, type="l", col=4)
-lines(smoothingSpline, col=6)
-abline(h=0.3, col=2)
+lines(smoothingSpline, col="clear")
+abline(h=0.315, col=2)
 
 #plot NDVI- mean(NDVI) to show anaomlaies of grpahd
 anom <- data- mean_ndvi 
@@ -75,3 +90,6 @@ mean_overall <- mean(data)
 mean_overall
 mean(mean_overall)
 cellStats(mean_overall, mean)
+
+
+
