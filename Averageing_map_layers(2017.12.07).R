@@ -64,13 +64,13 @@ x2 <-seq(from= 337, to= nlayers(data), by =2)
 #create lines of fit, then plot (x1,y1), then fit (x2,y2) as lines.
 smoothingSpline = smooth.spline(x1, y1, spar=0.35)
 smoothingSpline2 = smooth.spline(x2, y2, spar=0.35)
-plot(x1, y1, type="l", col="red", main= NDVI~VOD~1982~2015) 
-lines(smoothingSpline, col=4)
+plot(x1, y1, type="l", col="red", main= NDVI~VOD~1982~2015, ylim= c(0.2,0.5)) 
+lines(smoothingSpline, col="white")
 lines(smoothingSpline2, col=6)
 
+abline(3.041e-01, 2.465e-05)
 
-
-
+??ylim
 #lm for each line
 lm(y1~x1)
 abline(3.041e-01, 2.465e-05, col=2)
