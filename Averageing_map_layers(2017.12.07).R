@@ -1,7 +1,8 @@
  
-library(ncdf4)
+library(sp)
 library(raster) 
-library(SPAr)
+library(SPAr) 
+library(ncdf4)
 file <- "/Volumes/P_Harddrive/GIMMS3g_NDVI_Australia_1982_2015/Australia_NDVI3g_bimonthly_1982_2015.nc" 
 file2 <- "/Volumes/P_Harddrive/VOD_Australia_1993_2012/Australia_VOD_monthly_1993_2012.nc"
 
@@ -63,10 +64,12 @@ x2 <-seq(from= 337, to= nlayers(data), by =2)
 #create lines of fit, then plot (x1,y1), then fit (x2,y2) as lines.
 smoothingSpline = smooth.spline(x1, y1, spar=0.35)
 smoothingSpline2 = smooth.spline(x2, y2, spar=0.35)
-plot(x1, y1, type="l", col="white", main= NDVI~VOD~1982~2015) 
-lines(smoothingSpline, col=2)
-lines(x2, y2, col="white")
-lines(smoothingSpline2, col=4)
+plot(x1, y1, type="l", col="red", main= NDVI~VOD~1982~2015) 
+lines(smoothingSpline, col=4)
+lines(smoothingSpline2, col=6)
+
+
+
 
 #lm for each line
 lm(y1~x1)
@@ -79,7 +82,7 @@ y3 <- 0.3148508
 
 smoothingSpline = smooth.spline(x1, y1, spar=0.35)
 plot(x1,y1, type="l", col=4)
-lines(smoothingSpline, col="clear")
+lines(smoothingSpline, col="red")
 abline(h=0.315, col=2)
 
 #plot NDVI- mean(NDVI) to show anaomlaies of grpahd
