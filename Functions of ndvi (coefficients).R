@@ -79,11 +79,11 @@ for (k in 1:length(file.PET)) {
   }
   
                                       #MEANNDVI
-  meanndvi1 <- vector(length = nlayers(ndvi1))
+  meanndvi <- vector(length = nlayers(ndvi1))
   for(k in 1: nlayers(ndvi1)) {
-    meanndvi1[k] <- mean(values(ndvi1[[k]]), na.rm=TRUE)
+    meanndvi[k] <- mean(values(ndvi1[[k]]), na.rm=TRUE)
   }
- mean2ndvi<- mean(meanndvi1)
+ mean2ndvi<- mean(meanndvi)
   #0.3674486
  new_mean_precip <- meanprecip[13:41] 
 #log all data
@@ -93,32 +93,33 @@ for (k in 1:length(file.PET)) {
  qmeanPET <- log(meanPET)
                  
 #lm 
- fit1.lm <- lm (qmeanndvi~qmeanprecip)
- fit2.lm <- lm(ndvi_lessPET~qmeanprecip) 
- fit3.lm <- lm(qmeanndvi~qmeanPET)
- fit5.lm <- lm(ndvi_lessprecip~qmeanPET) 
- summary(fit5.lm)$r.squared
+ #fit1.lm <- lm (qmeanndvi~qmeanprecip)
+ #fit2.lm <- lm(ndvi_lessPET~qmeanprecip) 
+ #fit3.lm <- lm(qmeanndvi~qmeanPET)
+# fit5.lm <- lm(ndvi_lessprecip~qmeanPET) 
+ #summary(fit5.lm)$r.squared
  
  
  # PET vs NDVI
-fit3.lm <- lm(qmeanndvi~qmeanPET)
-plot(qmeanPET, qmeanndvi)
+fit3.lm <- lm(meanndvi1~meanPET)
+plot(meanPET, meanndvi)
 resid_PET <- resid(fit3.lm)
 summary(fit3.lm)$r.squared
 
 ndvi_lessPET<- (mean2ndvi+resid_PET)
-  
+  logresidPET <- log(ndvi_lessPET)
+ndvi_lessPET2 <- (meanndvi+resid_PET)
   #plot raninfall against ndvi without effects of PET 
   
-new_mean_precip <- meanprecip[13:41] 
-fit2.lm <- lm(ndvi_lessPET~new_mean_precip) 
-plot(new_mean_precip, ndvi_lessPET) 
+
+fit2.lm <- lm(logresidPET~qmeanprecip) 
+plot(qmeanprecip, logresidPET) 
   abline(fit2.lm) 
   summary(fit2.lm)$r.squared
 summary(fit3.lm)$r.squared 
 
               # PRECIPITATION VS NDVI 
-new_mean_precip <- meanprecip[13:41] 
+
 logprecip <- log(new_mean_precip)
 
 fit1.lm <- lm (qmeanndvi~qmeanprecip) 
@@ -130,16 +131,16 @@ summary(fit1.lm)$r.squared
 
 
 #try again with removing rainfall
-mean2ndvi<- mean(qmeanndvi)
+mean2ndvi<- mean(meanndvi1)
 #0.3674486
 
              # PRECIP vs NDVI residuals
-fit1.lm <- lm(qmeanndvi~qmeanprecip)
+fit1.lm <- lm(meanndvi1~meanprecip)
 plot(qmeanprecip, qmeanndvi)
 resid_precip <- residuals(fit1.lm)
 summary(fit1.lm)$r.squared
 
-ndvi_lessprecip <- (mean2ndvi+resid_precip)
+ndvi_lessprecip2 <- (meanndvi1+resid_precip)
 
 #plot raninfall against ndvi without effects of PET 
 fit5.lm <- lm(ndvi_lessprecip~qmeanPET) 
@@ -150,5 +151,6 @@ summary(fit2.lm)$r.squared
 summary(fit3.lm)$r.squared
 summary(fit5.lm)$r.squared 
 
-fit1.lm <- lm (meanndvi1~new_mean_precip)
-plot(fit1.lm)
+
+
+
