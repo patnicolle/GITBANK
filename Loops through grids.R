@@ -1,4 +1,7 @@
-#loops through grids 
+ #loops through grids 
+
+rm(list=ls(all=TRUE)) # removes all old variables
+
 library(sp)
 library(raster) 
 library(SPAr) 
@@ -41,19 +44,31 @@ rainfall <- crop(rainfall, ndvi)
 
 rainfall <- mask(rainfall, ndvi)
 
-slope <- rainfall[[1]]
-slope [slope >=0] <- NA 
+
+slope <- brick(nl=2, ncols=ncol(rainfall), nrows=nrow(rainfall), xmn=xmin(rainfall), xmx=xmax(rainfall), ymn=ymin(rainfall), ymx=ymax(rainfall))
 
 for (i in 1: nrow(rainfall)) {
   for (j in 1: ncol(rainfall)) {
+   
+    x <- as.vector(rainfall[i,j]) 
+    y <- as.vector(ndvi[i,j])
     
- x <- as.vector(rainfall[i,j]) 
- y <- as.vector(ndvi[i,j])
+    if (all(is.na(x))) next  #use all (all(is.na(x))) to find complete na values, then next to skip to next loop
+    
+    lm2.lm <- lm(y ~ x)
+    
+    slope[[1]][i,j] <- lm2.lm$coefficients[2]
 
-  lm2.lm <- lm(y ~ x)
- 
- slope[i,j] <- lm2.lm$coefficients[2]
- 
+    slope[[2]][i,j] <- glance(lm2.lm)$p.value
+    
   }
 }
+slope <- "grid_regression_rain_ndvi.nc"
+output_file <- "grid_regression_rain_ndvi.nc"
+writeRaster(x=slope, filename=output_file, varname="Regressed", 
+            longname="Linear Regression Ndvi~Precipitation")
 
+
+
+
+glance(lm2.lm)$p.value
