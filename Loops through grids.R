@@ -70,4 +70,24 @@ outputfile <- "ndvirainfallregression.nc"
 writeRaster(x=slope, filename=outputfile, varname="correlation", 
             longname="Linear Regression Ndvi~Precipitation")
 
+import <- "~/Desktop/NDVI_VOD/ndvirainfallregression.nc"
+data_import <- brick(import)
+data_import
+
+breaks <- c(-2e-04, 0, 2e-04, 4e-04, 6e-04, 8e-04, 10e-04)
+cols <- colorRampPalette(c( "moccasin", "khaki", "lemonchiffon2" , "darkseagreen", "olivedrab2", "limegreen", "limegreen"))
+
+breaks2 <- c(0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1)
+cols2 <- colorRampPalette(c("darkolivegreen", "darkseagreen4", "darkseagreen", "darkseagreen3", "olivedrab3", "olivedrab2", "white", "white", "white", "white"))
+cols3 <- colorRampPalette(c("red", "blue"))
+
+plot(data_import[[1]], breaks=breaks, col=cols(length(breaks)-1))
+plot(data_import[[2]], breaks=breaks2, col=cols3(length(breaks2)-1))
+
+class(data_import)
+
+pvals <- data_import[[2]]
+NDVIlineartrends <- data_import[[1]]
+
+
 
