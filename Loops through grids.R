@@ -28,15 +28,15 @@ ndviunflipped <- brick()
 }
  ndvi <-(flip(t(ndviunflipped), direction = "x"))
 
-#___________________________________________________________
+#_______________________________________________________________________________________
  
  pre <- brick() 
 nd <- brick() 
 PET <- brick() 
-#_________________________________________________________
+#_____________________________________________________________________________________
+
+#generating a precip file with same extent and dimensions as ndvi 
 rainfall <- pre1[[13:41]]
-
-
 
 rainfall <- resample(rainfall, ndvi)
 
@@ -44,6 +44,7 @@ rainfall <- crop(rainfall, ndvi)
 
 rainfall <- mask(rainfall, ndvi)
 
+#-----------------------------------------------------------------------------------------
 
 slope <- brick(nl=2, ncols=ncol(rainfall), nrows=nrow(rainfall), xmn=xmin(rainfall), xmx=xmax(rainfall), ymn=ymin(rainfall), ymx=ymax(rainfall))
 
@@ -63,12 +64,10 @@ for (i in 1: nrow(rainfall)) {
     
   }
 }
-slope <- "grid_regression_rain_ndvi.nc"
-output_file <- "grid_regression_rain_ndvi.nc"
-writeRaster(x=slope, filename=output_file, varname="Regressed", 
+#----------------------------------------------------------------------------------------
+outputfile <- "ndvirainfallregression.nc"
+
+writeRaster(x=slope, filename=outputfile, varname="correlation", 
             longname="Linear Regression Ndvi~Precipitation")
 
 
-
-
-glance(lm2.lm)$p.value
