@@ -9,24 +9,24 @@ library(ncdf4)
 library(RNetCDF)
 
 
-file.ndvi <- list.files("/Volumes/P_Harddrive/Annual_data/ndvi_1982_2011_Australia/", full.names = TRUE)
-file.precip <- list.files("/Volumes/P_Harddrive/Annual_data/Precipitation/", full.names = TRUE)
+file.ndvi <- list.files("/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/NDVI/", full.names = TRUE)
+file.precip <- list.files("/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/NDVI/", full.names = TRUE)
 file.PET <- list.files("/Volumes/P_Harddrive/Annual_data/PET_raster/", full.names = TRUE)
 
-Precipitation1 <- brick() 
+Pre1 <- brick() 
 for (k in 1:length(file.precip)) {
   datap = brick(file.precip[k])
-  Precipitation1 <- addLayer(Precipitation1, datap)
+  Pre1 <- addLayer(Pre1, datap)
 }
-pre1 <-(flip(t(Precipitation1), direction = "x")) 
+#pre1 <-(flip(t(Precipitation1), direction = "x")) 
  
 #___________________________________________________________
-ndviunflipped <- brick() 
+ndvi <- brick() 
   for (k in 1:length(file.ndvi)) {
     datan = brick(file.ndvi [k])
-    ndviunflipped <- addLayer(ndviunflipped, datan)
+    ndvi <- addLayer(ndvi, datan)
 }
- ndvi <-(flip(t(ndviunflipped), direction = "x"))
+ #ndvi <-(flip(t(ndviunflipped), direction = "x"))
 
 #_______________________________________________________________________________________
  
