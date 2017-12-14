@@ -84,7 +84,7 @@ lines(x3,y3, col="blue")
 
 
 
-??ylim
+
 #lm for each line
 #lm(y1~x1)
 #abline(3.041e-01, 2.465e-05, col=2)
