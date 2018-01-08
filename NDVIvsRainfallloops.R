@@ -80,30 +80,7 @@ rainfallwet[rainfallwet<meanprecip]<- NA
 
 #generating a value for slope for ndvi vs rainfall in high rain and low rain years
 
-for (i in 1: nrow(rainfalldry)) {
-  for (j in 1: ncol(rainfalldry)) {
-    x <- as.vector(rainfalldry[i,j]) 
-    y <- as.vector(ndvi[i,j])
-    
-    if (all(is.na(x))) next  
-    lm2.lm <- lm(y ~ x)
-    
- }
-}
-#use all (all(is.na(x))) to find complete na values, then next to skip to next loop
+plot(x= values(rainfall), y= values(ndvi)) 
+lm1.lm <- lm(values(ndvi)~values(rainfall)) 
+abline(lm1.lm, col=3)
 
-
-for (i in 1: nrow(rainfallwet)) {
-  for (j in 1: ncol(rainfallwet)) {
-    x <- as.vector(rainfallwet[i,j]) 
-    y <- as.vector(ndvi[i,j])
-    
-    if (all(is.na(x))) next  
-    lm3.lm <- lm(y ~ x)
-    
-  }
-}
-
-
-
-plot(rainfalldry,ndvi) 

@@ -93,11 +93,20 @@ for (k in 1:length(file.PET)) {
  qmeanPET <- log(meanPET)
                  
 #lm 
- #fit1.lm <- lm (qmeanndvi~qmeanprecip)
- #fit2.lm <- lm(ndvi_lessPET~qmeanprecip) 
- #fit3.lm <- lm(qmeanndvi~qmeanPET)
-# fit5.lm <- lm(ndvi_lessprecip~qmeanPET) 
- #summary(fit5.lm)$r.squared
+ #fit1.lm <- lm (meanndvi~meanprecip)
+ #fit2.lm <- lm(ndvi_lessPET~meanprecip) 
+ #fit3.lm <- lm(meanndvi~meanPET)
+ #fit5.lm <- lm(ndvi_lessprecip~meanPET) 
+
+ 
+ # PRECIP vs NDVI (residuals)
+ fit1.lm <- lm(meanndvi~new_mean_precip)
+ plot(qmeanprecip, qmeanndvi)
+ resid_precip <- residuals(fit1.lm)
+ summary(fit1.lm)$r.squared
+ 
+ ndvi_lessprecip2 <- (meanndvi+resid_precip)
+ 
  
  
  # PET vs NDVI
@@ -106,27 +115,35 @@ plot(meanPET, meanndvi)
 resid_PET <- resid(fit3.lm)
 summary(fit3.lm)$r.squared
 
+
 ndvi_lessPET<- (mean2ndvi+resid_PET)
   logresidPET <- log(ndvi_lessPET)
 ndvi_lessPET2 <- (meanndvi+resid_PET)
   #plot raninfall against ndvi without effects of PET 
   
 
-fit2.lm <- lm(logresidPET~qmeanprecip) 
-plot(qmeanprecip, logresidPET) 
-  abline(fit2.lm) 
-  summary(fit2.lm)$r.squared
+
+fit9.lm <- lm(ndvi_lessPET2~new_mean_precip) 
+plot(new_mean_precip, ndvi_lessPET2) 
+abline(fit9.lm) 
+summary(fit9.lm)$r.squared 
+
+
+
+
+
+
 summary(fit3.lm)$r.squared 
 
               # PRECIPITATION VS NDVI 
 
 logprecip <- log(new_mean_precip)
 
-fit1.lm <- lm (qmeanndvi~qmeanprecip) 
+fit6.lm <- lm (qmeanndvi~qmeanprecip) 
 plot(qmeanprecip, qmeanndvi) 
-abline(fit1.lm) 
-resid_precip <- residuals(fit1.lm)
-summary(fit1.lm)$r.squared
+abline(fit6.lm) 
+resid_precip <- residuals(fit6.lm)
+summary(fit6.lm)$r.squared
 
 
 
@@ -134,23 +151,26 @@ summary(fit1.lm)$r.squared
 mean2ndvi<- mean(meanndvi)
 #0.3674486
 
-             # PRECIP vs NDVI residuals
-fit1.lm <- lm(meanndvi~meanprecip)
-plot(qmeanprecip, qmeanndvi)
-resid_precip <- residuals(fit1.lm)
-summary(fit1.lm)$r.squared
 
-ndvi_lessprecip2 <- (meanndvi+resid_precip)
-
-#plot raninfall against ndvi without effects of PET 
-fit5.lm <- lm(ndvi_lessprecip~qmeanPET) 
-plot(qmeanPET, ndvi_lessprecip) 
+#    NDVI (less precip)   VS. PET
+fit5.lm <- lm(ndvi_lessprecip2~meanPET) 
+plot(meanPET, ndvi_lessprecip2) 
 abline(fit5.lm) 
+summary(fit5.lm)$r.squared 
+
+#  NDVI (less PET2)  VS. precip
+
+fit9.lm <- lm(ndvi_lessPET2~new_mean_precip) 
+plot(new_mean_precip, ndvi_lessPET2) 
+abline(fit9.lm) 
+summary(fit9.lm)$r.squared 
+
+
 summary(fit1.lm)$r.squared 
 summary(fit2.lm)$r.squared
 summary(fit3.lm)$r.squared
 summary(fit5.lm)$r.squared 
-
+summary(fit9.lm)$r.squared
 
 
 
