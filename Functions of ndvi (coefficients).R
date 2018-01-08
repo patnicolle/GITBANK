@@ -89,7 +89,7 @@ for (k in 1:length(file.PET)) {
 #log all data
  
  qmeanprecip <- log(new_mean_precip)
- qmeanndvi <- log(meanndvi1)
+ qmeanndvi <- log(meanndvi)
  qmeanPET <- log(meanPET)
                  
 #lm 
@@ -101,7 +101,7 @@ for (k in 1:length(file.PET)) {
  
  
  # PET vs NDVI
-fit3.lm <- lm(meanndvi1~meanPET)
+fit3.lm <- lm(meanndvi~meanPET)
 plot(meanPET, meanndvi)
 resid_PET <- resid(fit3.lm)
 summary(fit3.lm)$r.squared
@@ -131,16 +131,16 @@ summary(fit1.lm)$r.squared
 
 
 #try again with removing rainfall
-mean2ndvi<- mean(meanndvi1)
+mean2ndvi<- mean(meanndvi)
 #0.3674486
 
              # PRECIP vs NDVI residuals
-fit1.lm <- lm(meanndvi1~meanprecip)
+fit1.lm <- lm(meanndvi~meanprecip)
 plot(qmeanprecip, qmeanndvi)
 resid_precip <- residuals(fit1.lm)
 summary(fit1.lm)$r.squared
 
-ndvi_lessprecip2 <- (meanndvi1+resid_precip)
+ndvi_lessprecip2 <- (meanndvi+resid_precip)
 
 #plot raninfall against ndvi without effects of PET 
 fit5.lm <- lm(ndvi_lessprecip~qmeanPET) 
