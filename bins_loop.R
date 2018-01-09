@@ -22,7 +22,15 @@ for (k in 1:length(file.precip)) {
 
 
 precip1 <-(flip(t(Precipitation1), direction = "x"))
-precip2 <- precip1[[13:41]]
+precip2 <- precip1[[13:41]] 
+
+rainfall <- precip2
+
+rainfall <- resample(rainfall, ndvi)
+
+rainfall <- crop(rainfall, ndvi)
+
+rainfall <- mask(rainfall, ndvi)
 #----------------
 
 ndvi <- brick() 
@@ -35,16 +43,28 @@ ndvi <-(flip(t(ndvi), direction = "x"))
 
 seqr<- seq(from = 0,to = 2975, by = 25)
 
-percentile <- matrix( data=NA, nrow = length(file.ndvi), ncol = length(seqr))
+percentile <- matrix(data=NA, nrow = length(file.ndvi), ncol = length(seqr))
 for (b in 1: length(file.ndvi)) {
   o <- values(ndvi[[b]])
-  precip <- values(precip2[[b]])
+  precip <- values(rainfall[[b]])
   
-  for (k in seqr) {
+  for (k in 1: length(seqr)) {
     
-    ind <- which(precip>= k | precip< k+25) 
+    ind <- which(precip>= seqr[k] & precip< seqr[k]+25) 
     a <- o[ind] 
-    percentile[b,k] <- quantile(a, probs=0.5, na.rm= TRUE)
+    percentile[b,k] <- quantile(a, probs=c(0.5), na.rm= TRUE)
     
   } 
 }
+
+
+precipins<- matrix(data=seqr, nrow = length(file.ndvi), ncol = length(seqr), byrow = TRUE)
+v <- as.vector(precipins)
+c <- as.vector(percentile) 
+plot(precipins,percentile)
+#abline(lm10.lm, col=3)
+abline(segmented_lm, col=4)
+segmented_lm <- segmented(lm10.lm, seg.Z= ~v, psi = 300)
+lm10.lm <- lm(c~v) 
+
+
