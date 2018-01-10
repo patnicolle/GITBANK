@@ -19,18 +19,10 @@ for (k in 1:length(file.precip)) {
   datap = brick(file.precip[k])
   Precipitation1 <- addLayer(Precipitation1, datap)
 }
-
-
 precip1 <-(flip(t(Precipitation1), direction = "x"))
 precip2 <- precip1[[13:41]] 
 
-rainfall <- precip2
 
-rainfall <- resample(rainfall, ndvi)
-
-rainfall <- crop(rainfall, ndvi)
-
-rainfall <- mask(rainfall, ndvi)
 #----------------
 
 ndvi <- brick() 
@@ -40,7 +32,19 @@ for (k in 1:length(file.ndvi)) {
 }
 ndvi <-(flip(t(ndvi), direction = "x"))  
 
+#--------------------------
 
+rainfall <- precip2
+
+rainfall <- resample(rainfall, ndvi)
+
+rainfall <- crop(rainfall, ndvi)
+
+rainfall <- mask(rainfall, ndvi)
+
+
+
+#---------------------------
 seqr<- seq(from = 0,to = 2975, by = 25)
 
 percentile <- matrix(data=NA, nrow = length(file.ndvi), ncol = length(seqr))
@@ -62,8 +66,8 @@ precipins<- matrix(data=seqr, nrow = length(file.ndvi), ncol = length(seqr), byr
 v <- as.vector(precipins)
 c <- as.vector(percentile) 
 plot(precipins,percentile)
-#abline(lm10.lm, col=3)
-abline(segmented_lm, col=4)
+abline(lm10.lm, col=3)
+lines(lm10.lm)
 segmented_lm <- segmented(lm10.lm, seg.Z= ~v, psi = 300)
 lm10.lm <- lm(c~v) 
 
