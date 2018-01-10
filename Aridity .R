@@ -25,7 +25,6 @@ for (k in 1:length(file.precip)) {
 precip1 <-(flip(t(Precipitation1), direction = "x"))
 precip2 <- precip1[[13:41]] 
 
-precipitationy <- 
 
 
 
@@ -44,6 +43,14 @@ for (k in 1:length(file.PET)) {
   PET <- addLayer(PET, dataPET) 
 }
 #---------------------------------------
+rainfall <- precip2
+
+rainfall <- resample(rainfall, ndvi)
+
+rainfall <- crop(rainfall, ndvi)
+
+rainfall <- mask(rainfall, ndvi)
+
 #mean layers 
 meanPET <- mean(PET, na.rm= TRUE)
 meanPrecip <- mean(precip2) 
@@ -160,7 +167,7 @@ seqr<- seq(from = 0,to = 2975, by = 25)
 percentile <- matrix(data=NA, nrow = length(file.ndvi), ncol = length(seqr))
 for (b in 1: length(file.ndvi)) {
   o <- values(ndvi[[b]])
-  precip <- values(precip2[[b]])
+  precip <- values(rainfall[[b]])
   
   for (k in 1: length(seqr)) {
     
@@ -245,6 +252,7 @@ c <- as.vector(percentile)
 plot(precipins,percentile)
 lm10.lm <- lm(c~v)
 
+all <- as.vector(percentile)
 w <- as.vector(percentilewet)
 sub <- as.vector(percentilesub)
 semi <- as.vector(percentilesemi)
