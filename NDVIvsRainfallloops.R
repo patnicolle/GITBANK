@@ -83,6 +83,27 @@ x <- as.vector(values(rainfall))
 y <- as.vector(values(ndvi))
 x2 <- as.vector(values(rainfalldry))
 x3 <- as.vector(values(rainfallwet))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #regular 
 pdf("regualrndvirainfall.pdf")
 plot(x,y) 
