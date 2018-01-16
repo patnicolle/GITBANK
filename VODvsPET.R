@@ -21,7 +21,7 @@ temp <- brick(file.temp)
 data2 <- brick(file.vod)
 
 
-
+#bimonthly loop
 monthlytemp <- brick()
 months <- nlayers(temp)/2
 for (k in 1: months) {
