@@ -1,3 +1,9 @@
+#ndvi_correlation_withlags
+#must redo ndvi file as layer 427 is bad
+
+
+
+
 rm(list=ls(all=TRUE))
 setwd("/Volumes/P_Harddrive/")
 
@@ -10,7 +16,7 @@ library(RNetCDF)
 library(segmented) 
 library(stats)
 
-source("~/Desktop/scripts/cor_per_pixel_function.R")
+source("~/Desktop/scripts/cor_lagged_function.R")
 
 file.ndvi <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/NDVI/Australia_NDVI3g_bimonthly_1982_2015.nc"
 file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/NDVI/ANUCLIM_precipitation_1982_2008_NDVI_resolution.nc"
@@ -44,18 +50,74 @@ y_data <- dndvi
 combine_data <- x_data
 combine_data <- addLayer(combine_data, y_data)
 
-
-# run the predefined function "cor per pixel" as defined in the sourcing/library section
-# calculate( using x, with function = cor_per_pixel)
-corr_pixel <- calc(combine_data, fun=cor_per_pixel)
-
-#cor per pixel outputs [[1]]=correlation coefficient [[2]]=p-value 
+lagcorrelation <- calc(combine_data, fun = cor_lagged)
 
 
-pdf("ndvicorrelation[[1]].pdf")
-plot(corr_pixel[[1]])
+outputfile <- "newndvilagcorrelation.nc"
+
+writeRaster(x=lagcorrelation, filename=outputfile, varname="correlation", 
+            longname="Linear regression of lagged precip on NDVI", overwrite=TRUE)
+
+# read in the nc file
+lagcor.file <- "/Volumes/P_Harddrive/newndvilagcorrelation.nc"
+lagcorrelation <- brick(lagcor.file)
+
+
+
+pdf("ndvilagcorrelation[[1]].pdf")
+plot(lagcorrelation[[1]])
 dev.off()
 
-pdf("ndvicorrelation[[2]].pdf")
-plot(corr_pixel[[2]])
+pdf("ndvilagcorrelation[[2]].pdf") 
+plot(lagcorrelation[[2]])
 dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
