@@ -50,12 +50,42 @@ combine_data <- addLayer(combine_data, y_data)
 corr_pixel <- calc(combine_data, fun=cor_per_pixel)
 
 #cor per pixel outputs [[1]]=correlation coefficient [[2]]=p-value 
+breaks <- c(-6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,0.5,1.5,2.5,3.5,4.5,5.5,6.5)
+a<-colorRampPalette(c("brown4","brown1","coral1","yellow","springgreen","royalblue"))
+newbreaks <- c(-6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,0.5)
+newbreaks <- newbreaks+0.5
 
 
 pdf("ndvicorrelation[[1]].pdf")
 plot(corr_pixel[[1]])
+add_raster_legend2(cols=a(length(newbreaks)-1), limits=breaks[2:(length(breaks)-6)], spt.cex=1, 
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
 dev.off()
 
 pdf("ndvicorrelation[[2]].pdf")
 plot(corr_pixel[[2]])
 dev.off()
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+

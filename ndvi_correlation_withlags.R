@@ -18,13 +18,15 @@ library(stats)
 
 source("~/Desktop/scripts/cor_lagged_function.R")
 
-file.ndvi <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/NDVI/Australia_NDVI3g_bimonthly_1982_2015.nc"
+file.ndvi <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/NDVI/"
 file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/NDVI/ANUCLIM_precipitation_1982_2008_NDVI_resolution.nc"
 
 #generate a brick each 
 
 ndvi <- brick(file.ndvi) 
 prec <-brick(file.precip)
+
+
 
 # generate delta VOD 
 
@@ -63,6 +65,10 @@ lagcor.file <- "/Volumes/P_Harddrive/newndvilagcorrelation.nc"
 lagcorrelation <- brick(lagcor.file)
 
 
+breaks <- c(-6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,0.5)
+cols <- colorRampPalette(c("darkblue", "dodgerblue3", "darkslategray1",  "orange", "red", "darkred"))
+legendbreaks <- breaks+0.5
+
 
 pdf("ndvilagcorrelation[[1]].pdf")
 plot(lagcorrelation[[1]])
@@ -70,6 +76,7 @@ dev.off()
 
 pdf("ndvilagcorrelation[[2]].pdf") 
 plot(lagcorrelation[[2]])
+legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols(length(legendbreaks)), bty="n")
 dev.off()
 
 

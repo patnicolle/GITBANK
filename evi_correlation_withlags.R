@@ -12,23 +12,22 @@ library(segmented)
 library(stats)
 
 source("~/Desktop/scripts/cor_lagged_function.R")
-
-file.evi <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/EVI/Australia_EVI_16day_composite_8km_2001_2014.nc"
-file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/EVI/ANUCLIM_precip_bimonthly_2001_2014_EVI_resolution.nc"
-
+source("~/Desktop/scripts/add_raster_legend.R")
+file.evi <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/EVI/MONTHLYEVI.nc"
+file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/EVI/MONTHLYPRECIPEVI.nc"
 evi <- brick(file.evi)
 precip <- brick(file.precip)
 
-#evi is 2001:2015 
 
 deltaEVI <- brick()
-for (k in 1:(nlayers(evi)-2)) {
-  r <- mean(evi[[k+1]], evi[[k+2]])- evi[[k]]
+for (k in 1:(nlayers(evi)-1)) {
+  r <- evi[[k+1]] - evi[[k]]
   deltaEVI <- addLayer(deltaEVI, r)
 } 
 
 #match layers of EVI to precip
-deltaEVI <- deltaEVI[[1:322]] 
+deltaEVI <- deltaEVI[[1:167]] 
+precip <- precip[[1:nlayers(deltaEVI)]]
 
 x_data <- precip
 
@@ -51,16 +50,23 @@ writeRaster(x=lagcorrelation, filename=outputfile, varname="correlation",
 lagcor.file <- "/Volumes/P_Harddrive/evilagcorrelation.nc"
 lagcorrelation <- brick(lagcor.file)
 
+breaks <- c(-6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,0.5)
+
+cols <- colorRampPalette(c("darkblue", "dodgerblue3", "darkslategray1",  "orange", "red", "darkred"))
+legendbreaks <- breaks+0.5
+a<-colorRampPalette(c("brown4","brown1","coral1","yellow","springgreen","royalblue"))
+
 pdf("evilagcorrelation[[1]].pdf")
 plot(lagcorrelation[[1]])
 dev.off()
 
 pdf("evilagcorrelation[[2]].pdf") 
-plot(lagcorrelation[[2]])
+plot(lagcorrelation[[2]], col=cols(length(breaks)-1), breaks=breaks, legend=FALSE)
+legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols(length(legendbreaks)), bty="n")
 dev.off()
 
-
-
+#add_raster_legend2(cols=a(length(breaks)-1), limits=breaks[2:(length(breaks)-1)], spt.cex=1, 
+                   #main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
 
 
 

@@ -25,14 +25,14 @@ prec <-brick(file.precip)
 # generate delta VOD 
 
 deltaVOD <- brick()
-for (k in 1:(nlayers(vod)-2)) {
-  r <- mean(vod[[k+1]], vod[[k+2]])- vod[[k]]
+for (k in 1:(nlayers(vod)-1)) {
+  r <- vod[[k+1]]- vod[[k]]
   deltaVOD <- addLayer(deltaVOD, r)
 } 
 
 
 # match layers of x and y variable (e.g. rainfall and VOD)
-prec <- prec[[1:238]]
+prec <- prec[[1:nlayers(deltaVOD)]]
 
 
 
@@ -53,7 +53,7 @@ lagcorrelation <- calc(combine_data, fun = cor_lagged)
 outputfile <- "vodlagcorrelation.nc"
 
 writeRaster(x=lagcorrelation, filename=outputfile, varname="correlation", 
-            longname="Linear regression of lagged precip on VOD")
+            longname="Linear regression of lagged precip on VOD", overwrite=TRUE)
 
 
 pdf("vodlagcorrelation[[1]].pdf")

@@ -14,7 +14,7 @@ cor_lagged <- function(data_vec,   lag.max=6){
     #Data available, perform linear regression
   } else {
     
-    cor <- tryCatch(ccf(x=x_data, y=y_data, lag.max=lag.max, na.action = na.omit),  error = function(e) NULL)
+    cor <- tryCatch(ccf(x=x_data, y=y_data, lag.max=lag.max, na.action=na.pass, plot=FALSE), error = function(e) NULL)
     
     if(is.null(cor)){
       
@@ -22,16 +22,19 @@ cor_lagged <- function(data_vec,   lag.max=6){
       
     } else {
       
-      lags <- seq(lag.max * -1, lag.max, by=1)
+      lags <- seq(lag.max * -1, 0, by=1)
+      
+      #Only save negative and zero lag coeffs
+      cor_coefs <- cor$acf[(lag.max*-1):0]
       
       #Get slope and p-value
-      max_val  <- max(cor$acf)
-      ind <- which(cor$acf==max_val)
+      max_val  <- max(cor_coefs)
+      ind <- which(cor_coefs==max_val)
       
       if(!is.numeric(ind) | length(ind)!=1) return(c(NA,NA))
       
       
-      coef <- cor$acf[ind]
+      coef <- cor_coefs[ind]
       
       max_lag <- lags[ind]
     }
