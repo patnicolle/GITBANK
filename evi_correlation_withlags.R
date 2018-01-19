@@ -51,16 +51,19 @@ lagcor.file <- "/Volumes/P_Harddrive/evilagcorrelation.nc"
 lagcorrelation <- brick(lagcor.file)
 
 breaks <- c(-6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,0.5)
-
+breaks2 <- c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)
 cols <- colorRampPalette(c("darkblue", "dodgerblue3", "darkslategray1",  "orange", "red", "darkred"))
 legendbreaks <- breaks+0.5
 a<-colorRampPalette(c("brown4","brown1","coral1","yellow","springgreen","royalblue"))
-
-pdf("evilagcorrelation[[1]].pdf")
-plot(lagcorrelation[[1]])
+lats <- c(-43.83333,-5)
+pdf("lag_correlation/evilagcorrelation[[1]].pdf")
+plot(lagcorrelation[[1]], col=cols(length(breaks2)-1), breaks=breaks2, legend=FALSE)
+add_raster_legend2(cols=cols(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+                   
 dev.off()
 
-pdf("evilagcorrelation[[2]].pdf") 
+pdf("lag_correlation/evilagcorrelation[[2]].pdf") 
 plot(lagcorrelation[[2]], col=cols(length(breaks)-1), breaks=breaks, legend=FALSE)
 legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols(length(legendbreaks)), bty="n")
 dev.off()

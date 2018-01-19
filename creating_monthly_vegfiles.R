@@ -104,7 +104,7 @@ for (k in 0:((nlayers(data5)/24)-1)) {
 
 outputfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/NDVI/MONTHLYPRECIPNDVI.nc"
 
-writeRaster(x=ndvimonthly, filename=outputfile, varname="precip", 
+writeRaster(x=ndvimonthly_precip, filename=outputfile, varname="precip", 
             longname="NDVIMONTHLYprecip 82:08", overwrite=TRUE)
 
 
