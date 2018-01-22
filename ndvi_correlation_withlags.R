@@ -14,6 +14,7 @@ library(stats)
 
 source("~/Desktop/scripts/cor_lagged_function.R")
 source("~/Desktop/scripts/add_raster_legend.R")
+
 file.ndvi <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/NDVI/MONTHLYNDVI.nc"
 file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/NDVI/MONTHLYPRECIPNDVI.nc"
 
@@ -56,37 +57,31 @@ lagcor.file <- "/Volumes/P_Harddrive/newndvilagcorrelation.nc"
 lagcorrelation <- brick(lagcor.file)
 
 
-breaks <- c(-6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,0.5)
-cols <- colorRampPalette(c("darkblue", "dodgerblue3", "darkslategray1",  "orange", "red", "darkred"))
-legendbreaks <- breaks+0.5
-breaks2 <- c(-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1)
+breaks <- c(0,1,2,3,4,5,6,7)
+cols <- colorRampPalette(c("#f6eff7", "#d0d1e6", "#a6bddb", "#67a9cf", "#1c9099", "#016c59"))
+cols2 <- colorRampPalette(c("#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc"))
+cols1 <- colorRampPalette(c("darkblue", "dodgerblue3", "darkslategray1",  "orange", "red", "darkred"))
+legendbreaks <- breaks
+breaks2 <- c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)
 
 pdf("lag_correlation/ndvilagcorrelation[[1]].pdf")
-plot(lagcorrelation[[1]], col=cols(length(breaks2)-1), breaks=breaks2, legend=FALSE)
-add_raster_legend2(cols=cols(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
+plot(lagcorrelation[[1]], col=cols1(length(breaks2)-1), breaks=breaks2, legend=FALSE)
+add_raster_legend2(cols=cols1(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
                    main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
 
 dev.off()
 
 pdf("lag_correlation/ndvilagcorrelation[[2]].pdf") 
-plot(lagcorrelation[[2]], col=cols(length(breaks)-1), breaks=breaks, legend=FALSE)
-legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols(length(legendbreaks)), bty="n")
+plot(lagcorrelation[[2]], col=cols(length(breaks2)-1), breaks=breaks2, legend=FALSE)
+add_raster_legend2(cols=cols(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+
 dev.off()
 
-m <- mean(lagcorrelation[[1]])
-
-breaks3 <- c(-0.2,0, 0.6)
-
-pdf("a.pdf") 
-plot(lagcorrelation[[1]],col=cols(length(breaks3)-1), breaks=breaks3)
+pdf("lag_correlation/ndvilagcorrelation[[3]].pdf") 
+plot(lagcorrelation[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE)
+legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n")
 dev.off()
-
-
-
-
-
-
-
 
 
 
