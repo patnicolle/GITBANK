@@ -22,7 +22,7 @@ cor_test_with_lag <- function(x, y, lag){
 
 
 #Main function
-cor_lagged <- function(data_vec,  lag.max=6){
+cor_lag <- function(data_vec,  lag.max=6){
   
   
   len <- length(data_vec)
