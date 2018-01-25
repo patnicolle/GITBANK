@@ -17,7 +17,13 @@ file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/V
 vod <- brick(file.vod) 
 prec <-brick(file.precip)
 
-
+annual_prec <- brick()
+years <- nlayers(prec)/12
+for (k in 1: years) {
+  annual <- sum(prec[[(k*12-11):(k*12)]])
+  annual_prec <- addLayer(annual_prec, annual)
+}
+meanprecip <- mean(annual_prec)
 source("~/Desktop/scripts/add_raster_legend.R")
 source("~/Desktop/scripts/cor_function_perc~dir.R")
 #----------------------------------------------------------------------------------------------
@@ -39,6 +45,58 @@ lagsvodnormal <- calc(combine_data, fun=cor_lagged)
 lagsvodwet<- calc(combine_data, fun=function(x) cor_lagged(x, perc=0.7, dir= "above"))
 
 lagsvoddry<- calc(combine_data, fun=function(x) cor_lagged(x, perc=0.3, dir= "below"))
+
+#----------------------------------------------------------------------------------------------
+# LAG correlations 
+#mask wet and dry
+a<-lagsvodwet[[3]]
+b<-lagsvodnormal[[3]]
+c<-lagsvoddry[[3]]
+#----------------------------------------------------------------------------------------------
+
+meanprecip <- mean(annual_prec)
+meanprecip[is.na(a)] <- NA
+a[is.na(meanprecip)] <- NA
+
+a1<-as.vector(meanprecip)
+a2<-as.vector(a)
+
+z1<-cor.test(a1,a2)
+print(z1) 
+#----------------------------------------------------------------------------------------------
+
+meanprecip <- mean(annual_prec)
+meanprecip[is.na(b)] <- NA
+b[is.na(meanprecip)] <- NA
+
+b1<-as.vector(meanprecip)
+b2<-as.vector(b)
+
+z2<-cor.test(b1,b2)
+print(z2) 
+#----------------------------------------------------------------------------------------------
+
+meanprecip <- mean(annual_prec)
+meanprecip[is.na(c)] <- NA
+c[is.na(meanprecip)] <- NA
+
+c1<-as.vector(meanprecip)
+c2<-as.vector(c)
+
+z3<-cor.test(c1,c2)
+print(z3) 
+
+z1$estimate
+z2$estimate
+z3$estimate
+#----------------------------------------------------------------------------------------------
+
+pdf("lag_correlation/multilags/vodlags.pdf")
+par(mfrow=c(2,2), tcl=-0.5, mai=c(0.3,0.3,0.3,0.3))
+plot(lagsvoddry[[3]], main="Dry VOD Lag")
+plot(lagsvodnormal[[3]], main="Normal VOD Lag") 
+plot(lagsvodwet[[3]], main="Wet VOD Lag")
+dev.off()
 
 #----------------------------------------------------------------------------------------------
 
@@ -146,14 +204,14 @@ cellStats(lagsvodnormal[[3]], stat='mean', na.rm=TRUE)
 
 
 a <- lagsvoddry[[3]]
-a[lagsvoddry[[2]]>0.1] <- NA
+#a[lagsvoddry[[2]]>0.2] <- NA
 
 
 b <- lagsvodwet[[3]]
-b[lagsvodwet[[2]]>0.1] <- NA
+#b[lagsvodwet[[2]]>0.2] <- NA
 
 c <- lagsvodnormal[[3]]
-c[lagsvodnormal[[2]]>0.1] <- NA
+#c[lagsvodnormal[[2]]>0.2] <- NA
 
 par(mfrow=c(2,2), tcl=-0.5, mai=c(0.3,0.3,0.3,0.3))
 plot(a)
