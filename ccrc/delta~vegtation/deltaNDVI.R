@@ -8,16 +8,12 @@ library(ncdf4)
 library(RNetCDF) 
 library(segmented)
 
-file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/precip/ANUCLIM_precip_bimonthly_1982_2014_GIMMS_resolution.nc"
+file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Precipitation/NDVI/ANUCLIM_precipitation_1982_2008_NDVI_resolution.nc"
 file.ndvi <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Vegetation_indices/NDVI/Australia_NDVI3g_bimonthly_1982_2015.nc" 
 
 data <- brick(file.precip)
 data2 <- brick(file.ndvi)
-data2 <- data2[[1:792]] 
 
-P <- data 
-P[P<1] <- NA
-P <- P[[1:790]]
 
 
 deltaNDVI <- brick()
@@ -26,10 +22,19 @@ for (k in 1:(nlayers(data2)-2)) {
   deltaNDVI <- addLayer(deltaNDVI, r)
 }
 
-P[deltaNDVI<0 & deltaNDVI>0.5] <- NA
-deltaNDVI[deltaNDVI<0 & deltaNDVI>0.5] <- NA 
+deltaNDVI <- deltaNDVI[[1:nlayers(data)]]
+
+P <- data 
+
+#mask .na
+P[P<1] <- NA
+P[deltaNDVI<0] <- NA
+deltaNDVI[deltaNDVI<0] <- NA 
 deltaNDVI[is.na(P)] <- NA
 P[is.na(deltaNDVI)] <- NA
+
+
+
 #plot first few layers 
 
 #plot(P[[1]], deltaNDVI[[1]])
@@ -38,6 +43,8 @@ P[is.na(deltaNDVI)] <- NA
 #d1 <- as.vector(deltaNDVI[[1]])
 #lm1.lm <- lm(d1~p1)
 #abline(lm1.lm, col=3)
+
+
 x <- values(P)
 y <- values(deltaNDVI)
 
@@ -50,10 +57,10 @@ lmtotal.lm <- lm(y~x)
 
 summary(lmtotal.lm)$r.squared
 
-png("deltaNDVI_precip_10biweek.png")
-plot(x,y, cex=0.5)
-abline(lmtotal.lm, col=3)
-dev.off()
+#png("A_NEW_PLOT/deltaNDVI_precip_full.png")
+#plot(x,y, cex=0.5)
+#abline(lmtotal.lm, col=3)
+#dev.off()
 
 seqr<- seq(from = 0,to = 2975, by = 25)
 
@@ -76,8 +83,17 @@ precipins<- matrix(data=seqr, nrow = nlayers(deltaNDVI), ncol = length(seqr), by
 y2 <- as.vector(percentile)
 x2 <- as.vector(precipins)
 
-
-plot(x2, y2)
-abline(lm(y2~x2))
+pdf('A_NEW_PLOT/deltaNDVI~Rainfall~lm.pdf')
 abc.lm <- lm(y2~x2)
-summary(abc.lm)$r.squared
+a<-summary(abc.lm)$r.squared
+a <- format(round(a, 2), nsmall = 2)
+plot(x2, y2, xlim=c(0,1500), ylim= c(0,0.5))
+legend("topright", bty="n", legend=paste("R2 =",format(summary(abc.lm)$adj.r.squared, digits=4)))
+abline(lm(y2~x2), col=3)
+dev.off()
+
+
+
+
+
+

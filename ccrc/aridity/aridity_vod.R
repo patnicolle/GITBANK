@@ -1,7 +1,5 @@
 rm(list=ls(all=TRUE))
 setwd("/Volumes/P_Harddrive/")
-
-
 library(sp)
 library(raster) 
 library(SPAr) 
@@ -9,7 +7,6 @@ library(ncdf4)
 library(RNetCDF) 
 library(segmented)
 
-file.ndvi <- list.files("/Volumes/P_Harddrive/Annual_data/ndvi_1982_2011_Australia/",full.names = TRUE)
 file.precip <- list.files("/Volumes/P_Harddrive/Annual_data/Precipitation/", full.names = TRUE)
 file.PET <- list.files("/Volumes/P_Harddrive/Annual_data/PET_raster/", full.names = TRUE)
 file.vod <- "/Volumes/P_Harddrive/VOD_Australia_1993_2012/Australia_VOD_monthly_1993_2012.nc"
@@ -27,7 +24,8 @@ rainfall <- precip1[[12:31]]
 #-----------------------------------------------------
 
   
-  data2 <- brick(file.vod)
+data2 <- brick(file.vod)
+
 annual_VOD <- brick()
 yearsV <- nlayers(data2)/12
 for (k in 1: yearsV) {
@@ -54,7 +52,6 @@ meanPrecip <- mean(rainfall)
 ariditylayer <- (meanPET/meanPrecip)
 ariditylayer <- resample(ariditylayer, av)
 ariditylayer <- crop(ariditylayer, av)
-ariditylayer <- mask(ariditylayer, av)
 
 wet <- ariditylayer
 sub_humid <- ariditylayer
@@ -63,10 +60,16 @@ arid <- ariditylayer
 
 
 wet[wet>1] <- NA 
-sub_humid[sub_humid<1 | sub_humid>2] <- NA 
-semi_arid[semi_arid<2 | semi_arid>5] <- NA 
+sub_humid[sub_humid<1 & sub_humid>2] <- NA 
+semi_arid[semi_arid<2 & semi_arid>5] <- NA 
 arid[arid<5] <- NA 
 #--------------------------------------------
+wetav <- wet
+wetav[is.na(wet)] <- NA
+
+
+#--------------------------------------------
+
 #VOD MASK
 wetav <- resample(wet,av)
 wetav <- mask(av, wetav) 
