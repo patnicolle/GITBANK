@@ -11,7 +11,7 @@ data2 <- brick(file2)
 data2 <- data2/716 #work out to scale down to vod
 data <- brick(file)
 
-e <- extent(127,135,-28,-25)
+e <- extent(131,133.6,-19.9,-17.4)
 
 attempt <- data
 attempt <- crop(attempt,e)
@@ -29,7 +29,7 @@ for(k in 1: nlayers(precipattempt)) {
   meanprecip[k] <- mean(values(precipattempt[[k]]), na.rm=TRUE)
 }
 
-a <- (meanprecip*2)+0.1
+a <- (meanprecip/2)+0.15
 x1 <-seq(from= 1, to= nlayers(data), by=1)
 
 
@@ -37,6 +37,17 @@ smoothingSpline = smooth.spline(x1, meanVOD, spar=0.05)
 smoothingSpline2 = smooth.spline(x1, a, spar=0.1)
 
 
-plot(x1,meanVOD, col="white", ylim=c(0,0.5), main="(127,135,-28,-25)")
+plot(x1,meanVOD, col="white", ylim=c(0,0.5), main="(131,133.6,-19.9,-17.4)")
 lines(smoothingSpline, col=3)
 lines(smoothingSpline2, col="blue")
+
+
+
+
+
+
+
+
+
+
+
