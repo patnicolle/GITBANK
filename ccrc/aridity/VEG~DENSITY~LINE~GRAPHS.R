@@ -12,7 +12,7 @@ file3 <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by
 file4 <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/EVI/EVI_annual_integrated_values_2001_2014_ANUCLIM_precipitation_detrended_extreme_dry_years.nc"
 file5 <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/EVI/EVI_annual_integrated_values_2001_2014_ANUCLIM_precipitation_detrended_extreme_wet_years.nc"
 
-
+precfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precipitation/EVI/EVI_annual_integrated_values_2001_2014_ANUCLIM_precipitation_detrended.nc"
 vegfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Vegetation_indices/EVI/EVI_annual_integrated_values_2001_2014_masked_gapfilled_detrended.nc"
 
 dry <- brick(file1)
