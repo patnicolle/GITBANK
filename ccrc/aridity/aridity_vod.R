@@ -7,33 +7,33 @@ library(ncdf4)
 library(RNetCDF) 
 library(segmented)
 
-file.precip <- list.files("/Volumes/P_Harddrive/Annual_data/Precipitation/", full.names = TRUE)
+file.precip <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precipitation/VOD/VOD_annual_integrated_values_1993_2012_ANUCLIM_precipitation_detrended.nc"
 file.PET <- list.files("/Volumes/P_Harddrive/Annual_data/PET_raster/", full.names = TRUE)
-file.vod <- "/Volumes/P_Harddrive/VOD_Australia_1993_2012/Australia_VOD_monthly_1993_2012.nc"
+file.vod <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Vegetation_indices/VOD/VOD_annual_integrated_values_1993_2012_masked_gapfilled_detrended.nc"
 
-Precipitation1 <- brick() 
-for (k in 1:length(file.precip)) {
-  datap = brick(file.precip[k])
-  Precipitation1 <- addLayer(Precipitation1, datap)
-}
+#Precipitation1 <- brick() 
+#for (k in 1:length(file.precip)) {
+  #datap = brick(file.precip[k])
+ # Precipitation1 <- addLayer(Precipitation1, datap)
+#}
 
-precip1 <-(flip(t(Precipitation1), direction = "x"))
+#precip1 <-(flip(t(Precipitation1), direction = "x"))
 
-rainfall <- precip1[[12:31]]
+#rainfall <- precip1[[12:31]]
 
 #-----------------------------------------------------
 
-  
+rainfall <- brick(file.precip)
 data2 <- brick(file.vod)
+annual_VOD <- data2
+#annual_VOD <- brick()
+#yearsV <- nlayers(data2)/12
+#for (k in 1: yearsV) {
+#  annualV <- mean(data2[[(k*12-11):(k*12)]])
+#  annual_VOD <- addLayer(annual_VOD, annualV)
+#}
 
-annual_VOD <- brick()
-yearsV <- nlayers(data2)/12
-for (k in 1: yearsV) {
-  annualV <- mean(data2[[(k*12-11):(k*12)]])
-  annual_VOD <- addLayer(annual_VOD, annualV)
-}
-
-av <- annual_VOD
+av <- annual_VOD/12
 av <- resample(av, rainfall)
 av <- crop(av, rainfall)
 av <- mask(av, rainfall)
@@ -49,6 +49,7 @@ for (k in 1:length(file.PET)) {
 meanPET <- mean(PET, na.rm= TRUE)
 meanPrecip <- mean(rainfall) 
 
+meanPET <- resample(meanPET,meanPrecip)
 ariditylayer <- (meanPET/meanPrecip)
 ariditylayer <- resample(ariditylayer, av)
 ariditylayer <- crop(ariditylayer, av)
@@ -63,11 +64,6 @@ wet[wet>1] <- NA
 sub_humid[sub_humid<1 & sub_humid>2] <- NA 
 semi_arid[semi_arid<2 & semi_arid>5] <- NA 
 arid[arid<5] <- NA 
-#--------------------------------------------
-wetav <- wet
-wetav[is.na(wet)] <- NA
-
-
 #--------------------------------------------
 
 #VOD MASK
@@ -90,10 +86,10 @@ wetprecip <- resample(wetprecip, av)
 wetprecip <- crop(wetprecip, av)
 wetprecip <- mask(wetprecip, wet) 
 
-s_humidprecip <- rainfall
-s_humidprecip <- resample(s_humidprecip, av)
-s_humidprecip <- crop(s_humidprecip, av)
-s_humidprecip <- mask(s_humidprecip, sub_humid) 
+shumidprecip <- rainfall
+shumidprecip <- resample(shumidprecip, av)
+shumidprecip <- crop(shumidprecip, av)
+shumidprecip <- mask(shumidprecip, sub_humid) 
 
 s_aridprecip <- rainfall
 s_aridprecip <- resample(s_aridprecip, av)
@@ -106,7 +102,7 @@ aridprecip <- crop(aridprecip, av)
 aridprecip <- mask(aridprecip, arid) 
 
 x1 <- as.vector(values(wetprecip))
-x2 <- as.vector(values(s_humidprecip))
+x2 <- as.vector(values(shumidprecip))
 x3 <- as.vector(values(s_aridprecip))
 x4 <- as.vector(values(aridprecip))
 
@@ -115,29 +111,33 @@ y2 <- as.vector(values(sub_humidav))
 y3 <- as.vector(values(s_aridav))
 y4 <- as.vector(values(aridav))
 
-#pdf("wetregression.pdf") 
-#plot(x1,y1, cex=0.5, pch=20) 
-#lm1.lm <- lm(y1~x1) 
-#abline(lm1.lm, col=1)
-#dev.off() 
+pdf("A_NEW_PLOT/aridity/wetregression.pdf") 
+plot(x1,y1, cex=0.5, pch=20) 
+lm1.lm <- lm(y1~x1) 
+abline(lm1.lm, col=1)
+legend("topright", bty="n", legend=paste("r2=",format(summary(lm1.lm)$adj.r.squared, digits=4)))
+dev.off() 
 
-#pdf("sub_humidregression.pdf") 
-#plot(x2,y2, cex=0.5, pch= 20) 
-#lm2.lm <- lm(y2~x2) 
-#abline(lm2.lm, col=2)
-#dev.off() 
+pdf("A_NEW_PLOT/aridity/sub_humidregression.pdf") 
+plot(x2,y2, cex=0.5, pch= 20) 
+lm2.lm <- lm(y2~x2) 
+abline(lm2.lm, col=2)
+legend("topright", bty="n", legend=paste("r2=",format(summary(lm2.lm)$adj.r.squared, digits=4)))
+dev.off() 
 
-#pdf("semi_aridregression.pdf") 
-#plot(x3,y3, cex=0.5, pch=20) 
-#lm3.lm <- lm(y3~x3) 
-#abline(lm3.lm, col=3)
-#dev.off()
+pdf("A_NEW_PLOT/aridity/semi_aridregression.pdf") 
+plot(x3,y3, cex=0.5, pch=20) 
+lm3.lm <- lm(y3~x3) 
+abline(lm3.lm, col=3)
+legend("topright", bty="n", legend=paste("r2=",format(summary(lm3.lm)$adj.r.squared, digits=4)))
+dev.off()
 
-#pdf("aridregression.pdf") 
-#plot(x4,y4, cex=0.5, pch=20) 
-#lm4.lm <- lm(y4~x4) 
-#abline(lm4.lm, col=4)
-#dev.off()
+pdf("A_NEW_PLOT/aridity/aridregression.pdf") 
+plot(x4,y4, cex=0.5, pch=20) 
+lm4.lm <- lm(y4~x4) 
+abline(lm4.lm, col=4)
+legend("topright", bty="n", legend=paste("r2=",format(summary(lm4.lm)$adj.r.squared, digits=4)))
+dev.off()
 
 
 

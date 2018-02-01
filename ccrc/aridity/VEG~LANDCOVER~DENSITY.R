@@ -63,7 +63,7 @@ for (k in 1:length(land_cover_names)){
  dev.off()
  #---------------------------------------------------------------------------------------------------------
  #dry normal wet comparsion within land cover class
- pdf("A_NEW_PLOT/densitylines/landcover_vod_plots.pdf")
+ jpeg("A_NEW_PLOT/densitylines/landcover_vod_plots.jpeg")
  par(mfrow=c(4,2))
  
  for (k in 1:length(land_cover_names)){
