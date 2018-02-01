@@ -16,8 +16,8 @@ ndvi <- brick(file.ndvi)
 prec <-brick(file.precip)
 ndvi <- ndvi[[1:324]]
 
-source("~/Desktop/scripts/add_raster_legend.R")
-source("~/Desktop/scripts/cor_function_perc~dir.R")
+source("~/Desktop/scripts/ccrc/functions/add_raster_legend.R")
+source("~/Desktop/scripts/ccrc/functions/cor_function_perc~dir.R")
 #----------------------------------------------------------------------------------------------
 annual_prec <- brick()
 years <- nlayers(prec)/12
@@ -46,51 +46,7 @@ lagsndviwet<- calc(combine_data, fun=function(x) cor_lagged(x, perc=0.7, dir= "a
 
 lagsndvidry<- calc(combine_data, fun=function(x) cor_lagged(x, perc=0.3, dir= "below"))
 
-#----------------------------------------------------------------------------------------------
 
-# LAG correlations 
-#mask wet and dry
-a<-lagsndviwet[[3]]
-b<-lagsndvinormal[[3]]
-c<-lagsndvidry[[3]]
-#----------------------------------------------------------------------------------------------
-
-meanprecip <- mean(annual_prec)
-meanprecip[is.na(a)] <- NA
-a[is.na(meanprecip)] <- NA
-
-a1<-as.vector(meanprecip)
-a2<-as.vector(a)
-
-z1<-cor.test(a1,a2)
-print(z1) 
-#----------------------------------------------------------------------------------------------
-
-meanprecip <- mean(annual_prec)
-meanprecip[is.na(b)] <- NA
-b[is.na(meanprecip)] <- NA
-
-b1<-as.vector(meanprecip)
-b2<-as.vector(b)
-
-z2<-cor.test(b1,b2)
-print(z2) 
-#----------------------------------------------------------------------------------------------
-
-meanprecip <- mean(annual_prec)
-meanprecip[is.na(c)] <- NA
-c[is.na(meanprecip)] <- NA
-
-c1<-as.vector(meanprecip)
-c2<-as.vector(c)
-
-z3<-cor.test(c1,c2)
-print(z3) 
-
-
-z1$estimate
-z2$estimate
-z3$estimate
 #----------------------------------------------------------------------------------------------
 
 breaks <- c(0,1,2,3,4,5,6,7)
@@ -101,129 +57,168 @@ legendbreaks <- breaks
 breaks2 <- c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)
 #----------------------------------------------------------------------------------------------
 #WET
-pdf("lag_correlation/ndviwetlagcorrelation[[1]].pdf")
-plot(lagsndviwet[[1]], col=cols1(length(breaks2)-1), breaks=breaks2, legend=FALSE)
-add_raster_legend2(cols=cols1(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
-                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+pdf("lag_correlation/ndvi/ndviwetlagcorrelation[[1]].pdf")
+plot(lagsndviwet[[1]], col=cols2(length(breaks2)-1), breaks=breaks2, legend=FALSE)
+add_raster_legend2(cols=cols2(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.05,0.07), xpd=NA)
 
 dev.off()
 
-pdf("lag_correlation/ndviwetlagcorrelation[[2]].pdf") 
+pdf("lag_correlation/ndvi/ndviwetlagcorrelation[[2]].pdf") 
 plot(lagsndviwet[[2]], col=cols(length(breaks2)-1), breaks=breaks2, legend=FALSE)
 add_raster_legend2(cols=cols(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
-                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.05,0.07), xpd=NA)
 
 dev.off()
 
-pdf("lag_correlation/ndviwetlagcorrelation[[3]].pdf") 
+pdf("lag_correlation/ndvi/ndviwetlagcorrelation[[3]].pdf") 
 plot(lagsndviwet[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE)
 legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n")
 dev.off()
 
 #----------------------------------------------------------------------------------------------
 #DRY
-pdf("lag_correlation/ndvidrylagcorrelation[[1]].pdf")
-plot(lagsndvidry[[1]], col=cols1(length(breaks2)-1), breaks=breaks2, legend=FALSE)
-add_raster_legend2(cols=cols1(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
-                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+pdf("lag_correlation/ndvi/ndvidrylagcorrelation[[1]].pdf")
+plot(lagsndvidry[[1]], col=cols2(length(breaks2)-1), breaks=breaks2, legend=FALSE)
+add_raster_legend2(cols=cols2(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.05,0.07), xpd=NA)
 
 dev.off()
 
-pdf("lag_correlation/ndvidrylagcorrelation[[2]].pdf") 
+pdf("lag_correlation/ndvi/ndvidrylagcorrelation[[2]].pdf") 
 plot(lagsndvidry[[2]], col=cols(length(breaks2)-1), breaks=breaks2, legend=FALSE)
 add_raster_legend2(cols=cols(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
-                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.05,0.07), xpd=NA)
 
 dev.off()
 
-pdf("lag_correlation/ndvidrylagcorrelation[[3]].pdf") 
+pdf("lag_correlation/ndvi/ndvidrylagcorrelation[[3]].pdf") 
 plot(lagsndvidry[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE)
 legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n")
 dev.off()
 
 #----------------------------------------------------------------------------------------------
 #NORMAL
-pdf("lag_correlation/ndvinormallagcorrelation[[1]].pdf")
-plot(lagsndvinormal[[1]], col=cols1(length(breaks2)-1), breaks=breaks2, legend=FALSE)
-add_raster_legend2(cols=cols1(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
-                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+pdf("lag_correlation/ndvi/ndvinormallagcorrelation[[1]].pdf")
+plot(lagsndvinormal[[1]], col=cols2(length(breaks2)-1), breaks=breaks2, legend=FALSE)
+add_raster_legend2(cols=cols2(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.05,0.07), xpd=NA)
 
 dev.off()
 
-pdf("lag_correlation/ndvinormallagcorrelation[[2]].pdf") 
+pdf("lag_correlation/ndvi/ndvinormallagcorrelation[[2]].pdf") 
 plot(lagsndvinormal[[2]], col=cols(length(breaks2)-1), breaks=breaks2, legend=FALSE)
 add_raster_legend2(cols=cols(length(breaks2)-1), limits=breaks2[2:(length(breaks2)-1)], spt.cex=1, 
-                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.01,0.04), xpd=NA)
+                   main_title= "lag (months)", plot_loc=c(0.1,0.9,0.05,0.07), xpd=NA)
 
 dev.off()
 
-pdf("lag_correlation/ndvinormallagcorrelation[[3]].pdf") 
+pdf("lag_correlation/ndvi/ndvinormallagcorrelation[[3]].pdf") 
 plot(lagsndvinormal[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE)
 legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n")
 dev.off()
 
 pdf("lag_correlation/multilags/ndvilags.pdf")
 par(mfrow=c(2,2), tcl=-0.5, mai=c(0.3,0.3,0.3,0.3))
-plot(lagsndvidry[[3]], main="Dry NDVI Lag")
-plot(lagsndvinormal[[3]], main="Normal NDVI Lag") 
-plot(lagsndviwet[[3]], main="Wet NDVI Lag")
+plot(lagsndvidry[[3]],col=cols2(length(breaks)-1), breaks=breaks, main="Dry NDVI Lag")
+plot(lagsndvinormal[[3]],col=cols2(length(breaks)-1), breaks=breaks, main="Normal NDVI Lag") 
+plot(lagsndviwet[[3]],col=cols2(length(breaks)-1), breaks=breaks, main="Wet NDVI Lag")
 dev.off()
 
 
 
+#par(mfrow=c(2,2), tcl=-0.5, mai=c(0.3,0.3,0.3,0.3))
+#plot(lagsndvinormal[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE, main= "Normal")
+#legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n", cex = 0.61)
+
+#legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n", cex = 0.61)
+#plot(lagsndviwet[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE, main= "Wet")
+#legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n", cex = 0.61)
 
 
 
-par(mfrow=c(2,2), tcl=-0.5, mai=c(0.3,0.3,0.3,0.3))
-plot(lagsndvinormal[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE, main= "Normal")
-legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n", cex = 0.61)
+#cellStats(lagsndvidry[[3]], stat='mean', na.rm=TRUE)
 
-plot(lagsndvidry[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE, main= "Dry")
-legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n", cex = 0.61)
+#cellStats(lagsndviwet[[3]], stat='mean', na.rm=TRUE)
 
-plot(lagsndviwet[[3]], col=cols2(length(breaks)-1), breaks=breaks, legend=FALSE, main= "Wet")
-legend("bottom", horiz=TRUE, legend=legendbreaks[1:(length(legendbreaks)-1)], fill=cols2(length(legendbreaks)), bty="n", cex = 0.61)
-
-
-
-cellStats(lagsndvidry[[3]], stat='mean', na.rm=TRUE)
-
-cellStats(lagsndviwet[[3]], stat='mean', na.rm=TRUE)
-
-cellStats(lagsndvinormal[[3]], stat='mean', na.rm=TRUE)
+#cellStats(lagsndvinormal[[3]], stat='mean', na.rm=TRUE)
 
 
 
 
-a <- lagsvoddry[[3]]
+#a <- lagsndvidry[[3]]
 #a[lagsvoddry[[2]]>0.2] <- NA
 
 
-b <- lagsvodwet[[3]]
+#b <- lagsndviwet[[3]]
 #b[lagsvodwet[[2]]>0.2] <- NA
 
-c <- lagsvodnormal[[3]]
+#c <- lagsndvinormal[[3]]
 #c[lagsvodnormal[[2]]>0.2] <- NA
 
-par(mfrow=c(2,2), tcl=-0.5, mai=c(0.3,0.3,0.3,0.3))
-plot(a)
-plot(b)
-plot(c)
-
-cellStats(a, stat='mean', na.rm=TRUE)
-cellStats(b, stat='mean', na.rm=TRUE)
-cellStats(c, stat='mean', na.rm=TRUE)
+#par(mfrow=c(2,2), tcl=-0.5, mai=c(0.3,0.3,0.3,0.3))
+#plot(b)
+#plot(c)
 
 
-f <-b-a
-plot(f, main="wet-dry")
-g <- a-c
-plot(g, main="dry-normal")
-h <- b-c 
-plot(h, main="wet-normal")
+#cellStats(a, stat='mean', na.rm=TRUE)
+#cellStats(b, stat='mean', na.rm=TRUE)
+#cellStats(c, stat='mean', na.rm=TRUE)
 
 
+#f <-b-a
+#plot(f, main="wet-dry")
+#g <- a-c
+#plot(g, main="dry-normal")
+#h <- b-c 
+#plot(h, main="wet-normal")
 
+
+#----------------------------------------------------------------------------------------------
+
+# LAG correlations 
+#mask wet and dry
+#a<-lagsndviwet[[3]]
+#b<-lagsndvinormal[[3]]
+#c<-lagsndvidry[[3]]
+#----------------------------------------------------------------------------------------------
+
+#meanprecip <- mean(annual_prec)
+#meanprecip[is.na(a)] <- NA
+#a[is.na(meanprecip)] <- NA
+
+#a1<-as.vector(meanprecip)
+#a2<-as.vector(a)
+
+#z1<-cor.test(a1,a2)
+#print(z1) 
+#----------------------------------------------------------------------------------------------
+
+#meanprecip <- mean(annual_prec)
+#meanprecip[is.na(b)] <- NA
+#b[is.na(meanprecip)] <- NA
+
+#b1<-as.vector(meanprecip)
+#b2<-as.vector(b)
+
+#z2<-cor.test(b1,b2)
+#print(z2) 
+#----------------------------------------------------------------------------------------------
+
+#meanprecip <- mean(annual_prec)
+#meanprecip[is.na(c)] <- NA
+#c[is.na(meanprecip)] <- NA
+
+#c1<-as.vector(meanprecip)
+#c2<-as.vector(c)
+
+#z3<-cor.test(c1,c2)
+#print(z3) 
+
+
+#z1$estimate
+#z2$estimate
+#z3$estimate
 
 
 

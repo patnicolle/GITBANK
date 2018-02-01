@@ -1,3 +1,5 @@
+#rainfall reponse at specific lat/long aswell as mask area specific
+
 rm(list=ls(all=TRUE))
 setwd("/Volumes/P_Harddrive/")
 library(sp)
