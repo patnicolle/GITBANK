@@ -5,12 +5,12 @@ library(raster)
 library(SPAr) 
 library(ncdf4) 
 
-precfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precipitation/NDVI/NDVI_annual_integrated_values_1982_2014_ANUCLIM_precipitation_detrended.nc"
-vegfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Vegetation_indices/NDVI/NDVI_annual_integrated_values_1982_2014_masked_gapfilled_detrended.nc"
+precfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precipitation/VOD/VOD_annual_integrated_values_1993_2012_ANUCLIM_precipitation_detrended.nc"
+vegfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Vegetation_indices/VOD/VOD_annual_integrated_values_1993_2012_masked_gapfilled_detrended.nc"
 landfile <-"/Volumes/P_Harddrive/LAI_precip_variability/Data/land_cover/Dynamic_land_cover_map_7_classes.nc"
-precipdryfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/NDVI/NDVI_annual_integrated_values_1982_2014_ANUCLIM_precipitation_detrended_dry_years.nc"
-precipnormalfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/NDVI/NDVI_annual_integrated_values_1982_2014_ANUCLIM_precipitation_detrended_normal_years.nc"
-precipwetfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/NDVI/NDVI_annual_integrated_values_1982_2014_ANUCLIM_precipitation_detrended_wet_years.nc"
+precipdryfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/VOD/VOD_annual_integrated_values_1993_2012_ANUCLIM_precipitation_detrended_dry_years.nc"
+precipnormalfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/VOD/VOD_annual_integrated_values_1993_2012_ANUCLIM_precipitation_detrended_normal_years.nc"
+precipwetfile <- "/Volumes/P_Harddrive/LAI_precip_variability/Data/Annual_data/Precip_by_percentile/VOD/VOD_annual_integrated_values_1993_2012_ANUCLIM_precipitation_detrended_wet_years.nc"
 
 dry <-brick(precipdryfile)
 normal <- brick(precipnormalfile)
@@ -49,7 +49,7 @@ wetveg <- anomveg[-indwet]
 #---------------------------------------------------------------------------------------------------------
 #mean response comparing land cover types 
 
-pdf("A_NEW_PLOT/densitylines/landcover_ndvi_lines.pdf")
+pdf("A_NEW_PLOT/densitylines/landcover_vod_lines.pdf")
 par(mfrow=c(2,4))
 plot(x=NULL, xlim=c(-2,2), ylim=c(0,4))
 for (k in 1:length(land_cover_names)){
@@ -63,7 +63,7 @@ for (k in 1:length(land_cover_names)){
  dev.off()
  #---------------------------------------------------------------------------------------------------------
  #dry normal wet comparsion within land cover class
- pdf("A_NEW_PLOT/densitylines/landcover_ndvi_plots.pdf")
+ pdf("A_NEW_PLOT/densitylines/landcover_vod_plots.pdf")
  par(mfrow=c(4,2))
  
  for (k in 1:length(land_cover_names)){
@@ -78,9 +78,9 @@ for (k in 1:length(land_cover_names)){
    densitynormal <- density(vegnorm, na.rm=TRUE)
     densitywet <- density(vegwet, na.rm=TRUE)
    
-    plot(densitydry$x, densitydry$y, type="l", col="red", main=land_cover_names[k], ylim=c(0,5), xlim=c(-2,2)) 
+    plot(densitywet$x, densitywet$y, type="l", col="blue", main=land_cover_names[k], ylim=c(0,7), xlim=c(-2,2)) 
     lines(densitynormal$x, densitynormal$y, type='l', col="purple")
-    lines(densitywet$x, densitywet$y, type='l', col="blue")
+    lines(densitydry$x, densitydry$y, type='l', col="red")
     legend("topright", inset=.05, c("dry","normal","wet"), fill=cols1, horiz=TRUE, cex=0.5)
  }, error=function(e){})
   }
@@ -90,12 +90,10 @@ for (k in 1:length(land_cover_names)){
  #---------------------------------------------------------------------------------------------------------
  
  
- tryCatch({
-   print(i)
-   if (i==7) stop("Urgh, the iphone is in the blender !")
- }, error=function(e){})
- }
  
+
+
+
 
 
 
