@@ -24,8 +24,6 @@ meanveg <- mean(veg)
 anomveg= values(veg-meanveg)
 
 
-
-
 cols <- c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a")
 cols1 <- c("red", "purple", "blue")
 breaks <- 4
@@ -50,20 +48,22 @@ wetveg <- anomveg[-indwet]
 #mean response comparing land cover types 
 
 pdf("A_NEW_PLOT/densitylines/landcover_vod_lines.pdf")
-par(mfrow=c(2,4))
 plot(x=NULL, xlim=c(-2,2), ylim=c(0,4))
 for (k in 1:length(land_cover_names)){
-
+  tryCatch({
     ind <- which(values(land_cover_resampled) == k)
   
   veg_land <- anomveg[ind]
   landdensity <-density(as.vector(veg_land), na.rm=TRUE)
   lines(landdensity$x, landdensity$y, type="l", col=cols[k]) 
-}
- dev.off()
+  }, error=function(e){})
+   }
+dev.off()
  #---------------------------------------------------------------------------------------------------------
  #dry normal wet comparsion within land cover class
- jpeg("A_NEW_PLOT/densitylines/landcover_vod_plots.jpeg")
+
+ 
+pdf("A_NEW_PLOT/densitylines/landcover_vod_plots.pdf")
  par(mfrow=c(4,2))
  
  for (k in 1:length(land_cover_names)){
@@ -74,6 +74,12 @@ for (k in 1:length(land_cover_names)){
   vegnorm <- normalveg[ind]
   vegwet <- wetveg[ind]
    
+  
+  meanvegdry<- mean(vegdry, na.rm=TRUE)
+  meanvegnorm<- mean(vegnorm,na.rm=TRUE)
+  meanvegwet<- mean(vegwet,na.rm=TRUE)
+  a<-((meanvegwet-meanvegdry)/meanvegwet)
+  
   densitydry <- density(vegdry, na.rm=TRUE)
    densitynormal <- density(vegnorm, na.rm=TRUE)
     densitywet <- density(vegwet, na.rm=TRUE)
@@ -81,8 +87,10 @@ for (k in 1:length(land_cover_names)){
     plot(densitywet$x, densitywet$y, type="l", col="blue", main=land_cover_names[k], ylim=c(0,7), xlim=c(-2,2)) 
     lines(densitynormal$x, densitynormal$y, type='l', col="purple")
     lines(densitydry$x, densitydry$y, type='l', col="red")
-    legend("topright", inset=.05, c("dry","normal","wet"), fill=cols1, horiz=TRUE, cex=0.5)
- }, error=function(e){})
+    legend("topleft", inset=.05, c("dry","normal","wet"), fill=cols1, horiz=TRUE, cex=0.5)
+    legend("bottomleft", bty="n", legend=paste("Wet/dry difference=",a, options(digits=2)), cex=0.5)
+    legend("topright", bty="n", legend=paste(c("Dry mean",meanvegdry, "Normal mean", meanvegnorm, "Wet mean", meanvegwet)), cex=0.5)
+     }, error=function(e){})
   }
  
    dev.off()
@@ -90,10 +98,4 @@ for (k in 1:length(land_cover_names)){
  #---------------------------------------------------------------------------------------------------------
  
  
- 
-
-
-
-
-
-
+   
